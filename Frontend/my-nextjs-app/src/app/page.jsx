@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function HomePage() {
   const [user, setUser] = useState(null);
-  console.log("BACKEND_BASE_API:", process.env.NEXT_PUBLIC_MONGO_DB_URI);
+  console.log("BACKEND_BASE_API:", process.env.NEXT_PUBLIC_BACKEND_URL);
 
   useEffect(() => {
     // Fetch user data from the server (usaremos un endpoint en `/api/auth/me`)
@@ -32,7 +32,7 @@ export default function HomePage() {
   return (
     <main className="flex flex-col items-center justify-center h-screen bg-gray-100 text-center">
       <div className="bg-white p-8 rounded shadow-md max-w-sm w-full">
-        <h1 className="text-2xl font-bold mb-4">Bienvenido a EMTInfo</h1>
+        <h1 className="text-2xl font-bold mb-4">Bienvenido a PhotoNet</h1>
         {user ? (
           <div>
             <p className="mb-4">Hola, <strong>{user.email}</strong>. Estás autenticado.</p>

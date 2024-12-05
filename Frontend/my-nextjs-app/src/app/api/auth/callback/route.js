@@ -6,7 +6,7 @@ async function guardarLog(primaryEmail, tokenExpiry, token) {
   const BACKEND_BASE_API = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   try {
-    const res = await axios.post(`${BACKEND_BASE_API}/log`, {
+    const res = await axios.post(`${BACKEND_BASE_API}/logs`, {
       timestamp: new Date(), // Fecha y hora actual
       email: primaryEmail,   // Correo del usuario
       tokenExpiry,           // Fecha de expiración del token

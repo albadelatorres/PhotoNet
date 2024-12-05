@@ -2,8 +2,80 @@ const express = require('express');
 const router = express.Router();
 const Imagenes = require('../Model/imagenes');
 
+const cloudinary = require("cloudinary").v2;
+const formidable = require("formidable");
+
+// Configuración de Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+router.post("/", async (req, res) => {
+    try {
+        // Usar formidable para manejar los datos multipart/form-data
+        const form = new formidable.IncomingForm();
+        form.parse(req, async (err, fields, files) => {
+            if (err) {
+                return res.status(400).json({ message: "Error al procesar la solicitud", error: err });
+            }
+
+            const { id, descripcion } = fields;
+            const imageFile = files.image;
+            console.log(`id: ${id}\ndescripcion: ${descripcion}\nimagen: ${imageFile}`);
+            if (!id) {
+                return res.status(400).json({ message: "Faltan datos obligatorios (id)" });
+            } else if (!descripcion) {
+                return res.status(400).json({ message: "Faltan datos obligatorios (descripcion)" });
+            } else if (!imageFile) {
+                return res.status(400).json({ message: "Faltan datos obligatorios (imagen)" });
+            }
+
+            try {
+                // Subir la imagen a Cloudinary
+                const uploadResult = await cloudinary.uploader.upload(imageFile[0].filepath, {
+                    folder: "PhotoNet",
+                    transformation: [
+                        {
+                            quality: "auto",
+                            fetch_format: "auto",
+                        },
+                        {
+                            width: 300,
+                            height: 300,
+                            crop: "fill",
+                            gravity: "auto",
+                        },
+                    ],
+                });
+
+                if (!uploadResult || !uploadResult.secure_url) {
+                    throw new Error("No se pudo obtener la URL segura de la imagen");
+                }
+                // Enviar respuesta exitosa al cliente
+                return res.status(200).json({
+                    message: "Imagen subida y guardada con éxito",
+                    url: uploadResult.secure_url,
+                });
+
+            } catch (error) {
+                console.error("Error al subir la imagen o al hacer PUT:", error);
+                return res.status(500).json({
+                    message: "Error al subir la imagen o al guardar los datos",
+                    error: error.message,
+                });
+            }
+
+        });
+    } catch (error) {
+        console.error("Error en el servidor:", error);
+        return res.status(500).json({ message: "Error en el servidor", error: error.message });
+    }
+});
+
 // Crear una nueva imagen
-router.post('/', async (req, res) => {
+router.post('/new', async (req, res) => {
     try {
         const { usuario, url, descripcion } = req.body;
 

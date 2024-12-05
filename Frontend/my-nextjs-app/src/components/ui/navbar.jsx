@@ -13,14 +13,17 @@ const MyNavbar = () => {
   return (
     <Navbar isBordered>
       <NavbarBrand>
-        <p className="text-lg font-bold">EMTInfo</p>
+        <p className="text-lg font-bold">PhotoNet</p>
       </NavbarBrand>
       <NavbarContent hideIn="xs" variant="highlight-rounded">
         <NavbarItem>
           <Link href="/">Inicio</Link>
         </NavbarItem>
         <NavbarItem>
-          <Link href="/mapas">Mapas</Link>
+          <Link href="/img">Imagenes subidas</Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Link href="/subirImg">Subir imagen</Link>
         </NavbarItem>
         <NavbarItem>
           <Link href="/logs">Logs</Link>
