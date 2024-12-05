@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "esnext", // Versión moderna de ECMAScript
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ], // Soporte para APIs web modernas
+    "allowJs": true, // Permite incluir archivos .js
+    "skipLibCheck": true, // Omite la comprobación de tipos en las definiciones de librerías
+    "strict": true, // Activa el modo estricto para detectar errores
+    "forceConsistentCasingInFileNames": true, // Consistencia en nombres de archivo
+    "noEmit": true, // No genera archivos de salida
+    "incremental": true, // Mejora la velocidad de compilación en proyectos grandes
+    "module": "esnext", // Módulos modernos
+    "moduleResolution": "node", // Resolución de módulos estilo Node.js
+    "esModuleInterop": true, // Soporte para importar módulos CommonJS
+    "resolveJsonModule": true, // Permite importar archivos JSON
+    "isolatedModules": true, // Requerido por Next.js
+    "jsx": "preserve", // Conserva JSX (Next.js lo procesa)
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ] // Alias para la carpeta src
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts", // Declaraciones generadas por Next.js
+    ".next/types/**/*.ts", // Tipos generados por Next.js
+    "src/**/*" // Archivos TypeScript y JavaScript dentro de src
+  ],
+  "exclude": [
+    "node_modules" // Excluye dependencias externas
+  ]
+}
