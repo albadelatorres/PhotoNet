@@ -13,10 +13,10 @@ export default function UploadImagePage() {
     const getCookie = (name) => {
         const nameEQ = name + "=";
         const ca = document.cookie.split(';');
-        for(let i=0;i < ca.length;i++) {
+        for (let i = 0; i < ca.length; i++) {
             let c = ca[i];
-            while (c.charAt(0)==' ') c = c.substring(1,c.length);
-            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length,c.length);
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
         }
         return null;
     };
@@ -44,22 +44,36 @@ export default function UploadImagePage() {
         }
 
         const formData = new FormData();
-        formData.append('file', file); 
+        formData.append('image', file);
         formData.append('descripcion', descripcion);
         formData.append('usuario', usuario);
 
         try {
-            const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/imagenes/upload`,
+            // Paso 1: Subir imagen a Cloudinary
+            const uploadResponse = await axios.post(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/imagenes/`,
                 formData,
                 {
                     headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
+                        'Content-Type': 'multipart/form-data',
+                    },
                 }
             );
-            setMessage('Imagen subida exitosamente.');
-            console.log(response.data);
+            const imageUrl = uploadResponse.data.url; // Suponiendo que Cloudinary retorna `url`
+            console.log('Imagen subida exitosamente:', imageUrl);
+
+            // Paso 2: Guardar datos en la base de datos
+            const saveResponse = await axios.post(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/imagenes/new`,
+                { usuario, descripcion, url: imageUrl },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            setMessage('Datos guardados exitosamente.');
+            console.log('Respuesta del servidor:', saveResponse.data);
         } catch (error) {
             setMessage('Error al subir la imagen: ' + error.response?.data?.message || error.message);
             console.error(error);

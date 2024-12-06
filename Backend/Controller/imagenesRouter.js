@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Imagenes = require('../Model/imagenes');
+const axios = require("axios");
 
 const cloudinary = require("cloudinary").v2;
 const formidable = require("formidable");
@@ -21,11 +22,11 @@ router.post("/", async (req, res) => {
                 return res.status(400).json({ message: "Error al procesar la solicitud", error: err });
             }
 
-            const { id, descripcion } = fields;
+            const { usuario, descripcion } = fields;
             const imageFile = files.image;
-            console.log(`id: ${id}\ndescripcion: ${descripcion}\nimagen: ${imageFile}`);
-            if (!id) {
-                return res.status(400).json({ message: "Faltan datos obligatorios (id)" });
+            console.log(`usuario: ${usuario}\ndescripcion: ${descripcion}\nimagen: ${imageFile}`);
+            if (!usuario) {
+                return res.status(400).json({ message: "Faltan datos obligatorios (usuario)" });
             } else if (!descripcion) {
                 return res.status(400).json({ message: "Faltan datos obligatorios (descripcion)" });
             } else if (!imageFile) {
@@ -53,7 +54,7 @@ router.post("/", async (req, res) => {
                 if (!uploadResult || !uploadResult.secure_url) {
                     throw new Error("No se pudo obtener la URL segura de la imagen");
                 }
-                // Enviar respuesta exitosa al cliente
+
                 return res.status(200).json({
                     message: "Imagen subida y guardada con éxito",
                     url: uploadResult.secure_url,
