@@ -158,4 +158,19 @@ router.post('/:id/like', async (req, res) => {
     }
 });
 
+// Filtrar por hashtags
+router.get('/filter/:hashtag', async (req, res) => {
+    const { hashtag } = req.params; // Obtener el hashtag de la consulta
+    if (!hashtag) {
+        return res.status(400).json({ message: "El hashtag es requerido" });
+    }
+    try {
+        const images = await Imagenes.find({ hashtags: { $elemMatch: { $regex: hashtag, $options: "i" } } });
+        res.status(200).json(images);
+    } catch (error) {
+        console.error("Error al filtrar imágenes:", error);
+        res.status(500).json({ message: "Error al filtrar imágenes" });
+    }
+});
+
 module.exports = router;
